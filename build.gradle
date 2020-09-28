@@ -1,15 +1,69 @@
-plugins {
-	id 'org.springframework.boot' version '2.3.4.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'java'
+buildscript {
+	repositories {
+		mavenCentral()
+		jcenter()
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+		classpath "io.spring.gradle:dependency-management-plugin:$springDependencyGradleVersion"
+		classpath "org.yaml:snakeyaml:$snakeyamlVersion"
+	}
 }
+
+plugins {
+	id 'net.researchgate.release' version '2.6.0'
+}
+
+project.ext.env = project.ext.hasProperty('env') ? project.ext.env : 'dev'
 
 group = 'codes.opencms.ioninterview'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+
+project.ext.env = project.ext.hasProperty('env') ? project.ext.env : 'dev'
 
 repositories {
 	mavenCentral()
+}
+
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+
+allprojects {
+	apply plugin: 'idea'
+	apply plugin: 'java'
+
+
+	group 'com.avn'
+	version = version
+
+	tasks.withType(JavaCompile) {
+		sourceCompatibility = '8'
+		targetCompatibility = '8'
+		options.encoding = 'UTF-8'
+	}
+
+	configurations.all {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+		exclude group: 'org.springframework.boot', module: 'logback-classic'
+		exclude group: 'org.springframework.amqp', module: 'spring-amqp'
+		exclude group: 'org.springframework.amqp', module: 'spring-rabbit'
+	}
+
+	repositories {
+		mavenCentral()
+		mavenLocal()
+
+		maven {
+			url "https://repo.spring.io/plugins-release/"
+		}
+	}
+
+	gradle.projectsEvaluated {
+		tasks.withType(JavaCompile) {
+			options.compilerArgs << "-Xlint:deprecation"
+			options.compilerArgs << "-Xlint:unchecked"
+		}
+	}
 }
 
 dependencies {
