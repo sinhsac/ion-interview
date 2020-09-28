@@ -15,7 +15,7 @@ public class CalculatorGame {
     @PostMapping("/execute")
     public Map<String, List<String>> execute(@RequestBody Boolean[][] matrix) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
-            throw new RuntimeException("invalid data");
+            return new LinkedHashMap<>();
         }
 
         Integer maxRow = matrix.length;

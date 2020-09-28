@@ -18,7 +18,11 @@ import java.util.stream.Collectors;
 public class CallAnalys {
 
     @PostMapping("/analyse")
+    @SuppressWarnings("unchecked")
     public Map<String, Object> analyse(@RequestBody List<String> body) {
+        if (CollectionUtils.isEmpty(body)) {
+            return new LinkedHashMap<>();
+        }
         Map<String, Object> response = new LinkedHashMap<>();
         List<List> lists = body.stream()
                 .filter(line -> StringUtils.isNotBlank(line))
@@ -30,6 +34,7 @@ public class CallAnalys {
         return response;
     }
 
+    @SuppressWarnings("unchecked")
     private void processForItems(Map<String, Object> response, List<String> items, int indx) {
         if (CollectionUtils.isEmpty(items) || indx >= items.size()) {
             return;
